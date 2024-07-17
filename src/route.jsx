@@ -6,11 +6,12 @@ import LoginPage from "./pages/Login";
 import RegisterPage from "./pages/Register";
 import HomePage from "./pages/Home";
 import MainLayout from "./components/MainLayout";
+import { Landingpage } from "./pages/Landingpage";
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <div>Hello world!</div>,
+        element: <Landingpage />,
         // kalau mau dibuat landing page
     },
     {
