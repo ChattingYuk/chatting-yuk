@@ -1,17 +1,49 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../lib/firebase";
 import upload from "../lib/upload";
+import { useSignInWithGoogle } from "react-firebase-hooks/auth";
+import GoogleButton from "react-google-button";
 
 export default function RegisterPage() {
-    const [loading, setLoading] = useState(false)
     const [avatar, setAvatar] = useState({
         file: null,
         url: ""
     })
+    const navigate = useNavigate()
+    const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth)
+
+    const googleSignIn = async () => {
+        try {
+            const res = await signInWithGoogle()
+            console.log(res);
+            await setDoc(doc(db, "users", res.user.uid), {
+                avatar: res.user.photoURL,
+                username: "",
+                firstName: res.user.displayName.split(' ')[0],
+                lastName: res.user.displayName.split(' ')[1],
+                email: res.user.email,
+                birthDate: "",
+                id: res.user.uid,
+                blocked: []
+            });
+            await setDoc(doc(db, "userchats", res.user.uid), {
+                chats: [],
+            })
+            navigate('/app')
+        } catch (error) {
+            console.log(error);
+            Swal.fire({
+                title: "Oops...",
+                text: error.message,
+                icon: "error"
+            });
+        }
+
+    };
 
     const handleAvatar = e => {
         if (e.target.files[0]) {
@@ -28,7 +60,6 @@ export default function RegisterPage() {
         const {username, firstName, lastName, email, password, birthDate} = Object.fromEntries(formData)
         try {
             const res = await createUserWithEmailAndPassword(auth, email, password)
-            console.log(res);
             const profilePicture = await upload(avatar.file)
             await setDoc(doc(db, "users", res.user.uid), {
                 avatar: profilePicture,
@@ -65,11 +96,10 @@ export default function RegisterPage() {
                     <div className="text-center lg:text-left">
                         <h1 className="text-5xl font-bold">Register</h1>
                         <p className="py-6">
-                            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem
-                            quasi. In deleniti eaque aut repudiandae et a id nisi.
+                            Welcome to ChattingYuk! Sign up to experience what our app can offer you.
                         </p>
                     </div>
-                    <div className="card bg-base-100 w-full max-w-xl shrink-0 shadow-2xl">
+                    <div className="card bg-base-100 w-full max-w-lg shrink-0 shadow-2xl">
                         <form className="card-body" onSubmit={handleRegister}>
                             <div className="form-control ">
                                 <label className="label">
@@ -123,6 +153,9 @@ export default function RegisterPage() {
                                 <span>Already have an account? <Link to={'/login'} className="link link-hover">Login here</Link></span>
                             </label>
                         </form>
+                        <div className="flex justify-center mb-3">
+                            <GoogleButton label='Continue with Google' style={{ borderRadius: 5 }} onClick={googleSignIn} />
+                        </div>
                     </div>
                 </div>
             </div>
