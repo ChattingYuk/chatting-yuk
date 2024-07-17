@@ -13,11 +13,11 @@ export function Landingpage() {
         <div className="hero-overlay bg-opacity-60"></div>
         <div className="hero-content text-neutral-content text-center">
           <div className="max-w-md">
-            <div className="box-content bg-slate-900/50 rounded-2xl p-px">
+            <div className="box-content bg-slate-900/90 rounded-2xl p-10">
               <h1 className="mb-5 text-5xl font-bold">Hello there!</h1>
               <h3 className="mb-5 text-3xl">Welcome to ChattingYuk!</h3>
               <p className="mb-5">
-                ChattingYuk adalah aplikasi inovatif yang dirancang untuk
+                ChattingYuk! adalah aplikasi inovatif yang dirancang untuk
                 generasi muda yang berinteraksi dengan orang. Aplikasi ini mudah
                 digunakan memastikan pengalaman chatting yang lancar dan
                 menyenangkan. Dengan ChattingYuk, Anda dapat memperluas jaringan
