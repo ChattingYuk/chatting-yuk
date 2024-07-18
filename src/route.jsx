@@ -1,5 +1,6 @@
 import {
     createBrowserRouter,
+    redirect,
     RouterProvider,
 } from "react-router-dom";
 import LoginPage from "./pages/Login";
@@ -24,6 +25,12 @@ const router = createBrowserRouter([
     },
     {
         element: <MainLayout />,
+        loader: () => {
+            if (!localStorage.getItem('uid')) {
+                return redirect('/login')
+            }
+            return null
+        },
         children: [
             {
                 path: "/app",
